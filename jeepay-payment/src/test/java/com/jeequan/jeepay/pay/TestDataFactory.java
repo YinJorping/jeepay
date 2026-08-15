@@ -49,6 +49,25 @@ public class TestDataFactory {
         return params;
     }
 
+    // 方法5：退款下单基础参数（RefundOrderRQ 的必填字段 + 基础字段 + 签名）
+    // refundAmount 默认 30 分，mchRefundNo 用时间戳保证每次唯一（退款单号有唯一校验）
+    public static Map<String, Object> buildRefundParams() {
+        Map<String, Object> params = new HashMap<>();
+        params.put("mchNo", "MCH-TEST-001");
+        params.put("appId", "APP-TEST-001");
+        params.put("version", "1.0");
+        params.put("signType", "MD5");
+        params.put("reqTime", String.valueOf(System.currentTimeMillis() / 1000));
+        params.put("mchRefundNo", "REF-" + System.currentTimeMillis());
+        params.put("refundAmount", 30L);
+        params.put("currency", "cny");
+        params.put("refundReason", "测试退款");
+
+        String sign = SignUtils.getSign(params, APP_SECRET);
+        params.put("sign", sign);
+        return params;
+    }
+
     private static Map<String, Object> buildDefaultAndSign() {
         Map<String, Object> params = new HashMap<>();
 

@@ -120,8 +120,8 @@
 | 模块 | 状态 | 已沉淀测试资产 |
 |------|------|--------------|
 | 支付 | ✅ | SignUtils、PayApiTestBase、TestDataFactory、UnifiedOrderTest（14 条）、PayOrderQueryCloseTest（3 条）、prepare-test-data.sql、工程问题日志（6 条） |
-| 回调 | 🔄 | 需求分析中（ChannelNoticeController 已读完） |
-| 退款 | ⬜ | 待开始 |
+| 回调 | ✅ | CallbackTestBase、ChannelCallbackTest（9 条）、prepare-callback-data.sql、@MockBean mock 渠道模式 |
+| 退款 | ✅ | RefundSpringTestBase、RefundOrderTest（12 条）、RefundOrderQueryTest（4 条）、RefundOrderSuccessTest（1 条）、RefundOrderNoticeTest（2 条）、prepare-refund-data.sql、SQL 对账断言 |
 | 认证 | ⬜ | 待开始 |
 | CI/CD | ⬜ | 待开始 |
 
