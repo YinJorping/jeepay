@@ -21,7 +21,7 @@ import static org.mockito.Mockito.when;
  * 复用支付回调模块的模式：@SpringBootTest + @MockBean mock 渠道回调服务，
  * 验证退款单状态机 ING(1) → SUCCESS(2) / FAIL(3)
  */
-public class RefundOrderNoticeTest extends RefundSpringTestBase {
+public class RefundOrderNoticeTest extends PaySpringTestBase {
 
     private static final String REFUND_ORDER_ID = "TEST-REF-RO-NOTICE-1";
     private static final String PAY_ORDER_ID = "TEST-REFUND-NOTICE-001";
@@ -36,7 +36,7 @@ public class RefundOrderNoticeTest extends RefundSpringTestBase {
                 PAY_ORDER_ID);
     }
 
-    private void mockParseParams(String refundOrderId) {
+    private void mockRefundParseParams(String refundOrderId) {
         MutablePair<String, Object> pair = new MutablePair<>();
         pair.setLeft(refundOrderId);
         pair.setRight("mock params");
@@ -59,7 +59,7 @@ public class RefundOrderNoticeTest extends RefundSpringTestBase {
      */
     @Test
     void testRefundCallbackSuccess() {
-        mockParseParams(REFUND_ORDER_ID);
+        mockRefundParseParams(REFUND_ORDER_ID);
         when(wxpayChannelRefundNoticeService.doNotice(
                 any(HttpServletRequest.class), any(), any(RefundOrder.class),
                 any(MchAppConfigContext.class), any()))
@@ -87,7 +87,7 @@ public class RefundOrderNoticeTest extends RefundSpringTestBase {
      */
     @Test
     void testRefundCallbackFail() {
-        mockParseParams(REFUND_ORDER_ID);
+        mockRefundParseParams(REFUND_ORDER_ID);
         when(wxpayChannelRefundNoticeService.doNotice(
                 any(HttpServletRequest.class), any(), any(RefundOrder.class),
                 any(MchAppConfigContext.class), any()))

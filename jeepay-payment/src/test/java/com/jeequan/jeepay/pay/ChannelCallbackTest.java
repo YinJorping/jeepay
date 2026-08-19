@@ -2,8 +2,6 @@ package com.jeequan.jeepay.pay;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -11,10 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /**
  * 回调模块测试
  */
-public class ChannelCallbackTest extends CallbackTestBase {
-
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+public class ChannelCallbackTest extends PaySpringTestBase {
 
     /** 每个测试前重置数据，避免执行顺序污染 */
     @BeforeEach

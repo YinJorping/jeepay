@@ -19,7 +19,7 @@ import static org.mockito.Mockito.when;
  *   RefundOrderTest 是 REST Assured 直连 Docker，测校验分支（code=9999）
  *   本类是 @SpringBootTest + @MockBean，把微信退款渠道 mock 成成功，测完整成功链路 + SQL 对账
  */
-public class RefundOrderSuccessTest extends RefundSpringTestBase {
+public class RefundOrderSuccessTest extends PaySpringTestBase {
 
     private static final String APP_SECRET = "test_app_secret_abc123";
     private static final String PAY_ORDER_ID = "TEST-REFUND-SUCCESS-001";
