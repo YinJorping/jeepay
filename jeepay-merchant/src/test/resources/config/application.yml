@@ -1,0 +1,62 @@
+# ============================================================
+# 认证模块测试配置
+# @SpringBootTest 使用此配置连接 Docker 中的 MySQL/Redis/RocketMQ
+# 关键：redis database=2（商户系统库），验证码/token 都在库 2
+# 放 config/ 目录：test-classes 优先于 conf/devCommons 打包的 config/application.yml
+# ============================================================
+
+server:
+  servlet:
+    context-path: /
+
+spring:
+  application:
+    name: jeepay-merchant-test
+  main:
+    allow-circular-references: true
+  datasource:
+    url: jdbc:mysql://127.0.0.1:13306/jeepaydb?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=utf-8&autoReconnect=true&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: rootroot
+    druid:
+      initial-size: 2
+      min-idle: 2
+      max-active: 10
+  cache:
+    type: redis
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6380
+      database: 2
+      timeout: 1000
+      password:
+  freemarker:
+    template-loader-path: classpath:/templates
+    suffix: .ftl
+    settings:
+      classic_compatible: true
+      number_format: '#'
+
+logging:
+  level:
+    root: info
+    com.jeequan.jeepay: info
+
+isys:
+  allow-cors: true
+  cache-config: true
+  jwt-secret: ARNXp4MzjOOQqxtv
+  oss:
+    file-root-path: ./upload
+    file-public-path: ${isys.oss.file-root-path}/public
+    file-private-path: ${isys.oss.file-root-path}/private
+    service-type: local
+  mq:
+    vender: rocketMQ
+
+rocketmq:
+  name-server: 127.0.0.1:9876
+  producer:
+    group: PID_JEEPAY_MCH_TEST
+    send-message-timeout: 10000
