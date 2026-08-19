@@ -11,21 +11,7 @@ import static io.restassured.RestAssured.given;
 
 public class UnifiedOrderTest extends PayApiTestBase{
 
-    // ──── 正常路径 ────
-
-    @Test
-    void testNormalOrder() {
-        Map<String, Object> params = TestDataFactory.buildCompleteParams();
-
-        given()
-                .body(params)
-        .when()
-                .post("/api/pay/unifiedOrder")
-        .then()
-                .body("code", equalTo(0))
-                .body("msg", equalTo("SUCCESS"));
-    }
-
+    // 正常路径已迁到 UnifiedOrderSuccessTest（mock 支付渠道），本类只保留参数校验/签名/商户状态用例
     // ──── 必填字段缺失（12条，参数化合并为一个方法） ────
 
     @ParameterizedTest

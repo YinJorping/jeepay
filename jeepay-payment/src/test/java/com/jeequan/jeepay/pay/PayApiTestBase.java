@@ -5,6 +5,8 @@ import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.BeforeEach;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import java.util.Map;
 
@@ -19,6 +21,16 @@ public abstract class PayApiTestBase {
     protected static final String APP_SECRET = "test_app_secret_abc123";
     protected static final String MCH_NO = "MCH-TEST-001";
     protected static final String APP_ID = "APP-TEST-001";
+
+    /**
+     * 直连 Docker MySQL（无需 Spring 上下文），供直连测试做数据复位。
+     * 直连测试（baseUri=9216）没有 @SpringBootTest 上下文，拿不到自动注入的 JdbcTemplate，
+     * 只能自己 new 一个，连接参数与 config/application.yml 保持一致。
+     */
+    protected final JdbcTemplate jdbcTemplate = new JdbcTemplate(
+            new DriverManagerDataSource(
+                    "jdbc:mysql://127.0.0.1:13306/jeepaydb?useSSL=false&allowPublicKeyRetrieval=true&characterEncoding=utf-8",
+                    "root", "rootroot"));
 
     /**
      * 每个测试用例执行前自动跑一次，配好全局默认请求模板

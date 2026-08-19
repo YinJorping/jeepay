@@ -1,5 +1,6 @@
 package com.jeequan.jeepay.pay;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
@@ -9,6 +10,15 @@ import java.util.Map;
 import static io.restassured.RestAssured.given;
 
 public class PayOrderQueryCloseTest extends PayApiTestBase {
+
+    /**
+     * 关单用例会改变 TEST-PAY-INIT-001 的状态（0→6），
+     * 重复执行前必须复位回 INIT，否则第二次跑会命中「当前订单不可关闭」。
+     */
+    @BeforeEach
+    void resetCloseOrderData() {
+        jdbcTemplate.update("UPDATE t_pay_order SET state=0 WHERE pay_order_id='TEST-PAY-INIT-001'");
+    }
 
     /**
      * 查询已存在的订单：用 SQL 预插入的 state=SUCCESS 订单

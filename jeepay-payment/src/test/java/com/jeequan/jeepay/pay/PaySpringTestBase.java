@@ -4,6 +4,7 @@ import com.jeequan.jeepay.pay.bootstrap.JeepayPayApplication;
 import com.jeequan.jeepay.pay.channel.wxpay.WxpayChannelNoticeService;
 import com.jeequan.jeepay.pay.channel.wxpay.WxpayChannelRefundNoticeService;
 import com.jeequan.jeepay.pay.channel.wxpay.WxpayPayOrderCloseService;
+import com.jeequan.jeepay.pay.channel.wxpay.WxpayPaymentService;
 import com.jeequan.jeepay.pay.channel.wxpay.WxpayRefundService;
 import com.jeequan.jeepay.pay.model.MchAppConfigContext;
 import com.jeequan.jeepay.pay.rqrs.msg.ChannelRetMsg;
@@ -57,6 +58,12 @@ public abstract class PaySpringTestBase {
     /** 关单渠道 mock：不连真实微信关单 */
     @MockBean
     protected WxpayPayOrderCloseService wxpayPayOrderCloseService;
+
+    /** 统一下单渠道 mock：不连真实微信统一下单。
+     *  必须用 name 精确指定：WxpayPaymentService 被 12 个 payway 子类（WxNative/WxBar/WxH5...）继承，
+     *  按类型 @MockBean 会匹配到 13 个 bean 报「expected a single matching bean」，需用 name 只替换 "wxpayPaymentService" 这一个。 */
+    @MockBean(name = "wxpayPaymentService")
+    protected WxpayPaymentService wxpayPaymentService;
 
     @BeforeEach
     void setUpBaseUri() {
