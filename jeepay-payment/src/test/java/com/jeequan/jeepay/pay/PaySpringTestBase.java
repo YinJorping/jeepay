@@ -1,5 +1,6 @@
 package com.jeequan.jeepay.pay;
 
+import com.jeequan.jeepay.components.mq.vender.IMQSender;
 import com.jeequan.jeepay.pay.bootstrap.JeepayPayApplication;
 import com.jeequan.jeepay.pay.channel.wxpay.WxpayChannelNoticeService;
 import com.jeequan.jeepay.pay.channel.wxpay.WxpayChannelRefundNoticeService;
@@ -64,6 +65,13 @@ public abstract class PaySpringTestBase {
      *  按类型 @MockBean 会匹配到 13 个 bean 报「expected a single matching bean」，需用 name 只替换 "wxpayPaymentService" 这一个。 */
     @MockBean(name = "wxpayPaymentService")
     protected WxpayPaymentService wxpayPaymentService;
+
+    /** MQ 发送器 mock：不真发 RocketMQ。
+     *  测试配置 vender=rocketMQ，4 个 IMQSender 实现中只有 RocketMQSender 被 @ConditionalOnProperty 激活，
+     *  按类型 @MockBean 可消歧。mock 后既避免 consumer 真对 notifyUrl 做 HTTP 外呼污染数据，
+     *  又可用 Mockito.verify 把「通知已发出」变成显式断言。 */
+    @MockBean
+    protected IMQSender mqSender;
 
     @BeforeEach
     void setUpBaseUri() {
