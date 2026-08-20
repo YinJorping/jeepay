@@ -4,7 +4,8 @@
 -- 执行方式：docker exec -i jeepay-mysql mysql -uroot -prootroot jeepaydb < prepare-auth-data.sql
 -- 统一密码：Test@123456
 -- BCrypt 哈希：$2a$10$sx54WiPjfwaJdra.RmUoVekzvr6TRDVQCrjWg65QBC0t1DArKJy/C
--- 所有 INSERT IGNORE 保证幂等，重复执行不报错
+-- 幂等策略：t_sys_user / t_mch_info 有主键或唯一键，INSERT IGNORE 即可去重；
+--           t_sys_user_auth 仅自增主键，须先 DELETE 测试行再 INSERT（见下方说明）
 -- ============================================================
 
 -- ──── 商户：正常 + 禁用 ────
@@ -40,6 +41,10 @@ VALUES (900006, 'authtel', '手机号用户', '13800138000', 1, 1, 'MCH', 'MCH-A
 
 -- ──── 认证凭证（密码统一 Test@123456，credential 为 BCrypt 哈希） ────
 -- 900001~900005 用户名登录 identity_type=1；900006 手机号登录 identity_type=2
+-- 注意：t_sys_user_auth 主键是自增 auth_id，没有 (identifier,identity_type,sys_type) 唯一键，
+--       单纯 INSERT IGNORE 无法去重，重复执行会累积重复行，导致 selectByLogin 的 selectOne 抛
+--       TooManyResultsException（一次会话中重复加载 seed 即复现）。故先按测试 user_id 清空再插入。
+DELETE FROM t_sys_user_auth WHERE user_id IN (900001, 900002, 900003, 900004, 900005, 900006) AND sys_type = 'MCH';
 INSERT IGNORE INTO t_sys_user_auth (user_id, identity_type, identifier, credential, salt, sys_type)
 VALUES
 (900001, 1, 'authadmin', '$2a$10$sx54WiPjfwaJdra.RmUoVekzvr6TRDVQCrjWg65QBC0t1DArKJy/C', '', 'MCH'),

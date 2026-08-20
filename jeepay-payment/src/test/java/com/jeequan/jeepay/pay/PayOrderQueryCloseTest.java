@@ -9,7 +9,7 @@ import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 
-public class PayOrderQueryCloseTest extends PayApiTestBase {
+public class PayOrderQueryCloseTest extends PaySpringTestBase {
 
     /**
      * 关单用例会改变 TEST-PAY-INIT-001 的状态（0→6），

@@ -9,7 +9,7 @@ import java.util.Map;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 
-public class RefundOrderTest extends PayApiTestBase {
+public class RefundOrderTest extends PaySpringTestBase {
 
     /**
      * 013：订单状态不是 SUCCESS 时发起退款，被拒

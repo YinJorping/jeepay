@@ -9,7 +9,7 @@ import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 
-public class UnifiedOrderTest extends PayApiTestBase{
+public class UnifiedOrderTest extends PaySpringTestBase {
 
     // 正常路径已迁到 UnifiedOrderSuccessTest（mock 支付渠道），本类只保留参数校验/签名/商户状态用例
     // ──── 必填字段缺失（12条，参数化合并为一个方法） ────
@@ -43,9 +43,15 @@ public class UnifiedOrderTest extends PayApiTestBase{
 
     // ──── 签名验证异常 ────
 
+    /**
+     * 商户应用不存在（appId 查无）→ 命中「商户或商户应用不存在」分支（ApiController:77）
+     * 必须改 appId 而非 mchNo：缓存启用时 ConfigContextService 以 appId 为 key 缓存 mchAppConfigContext，
+     * 若保留合法 APP-TEST-001 只改 mchNo，一旦该 appId 被其他用例预热缓存，会直接返回旧上下文，
+     * 转而命中「参数appId与商户号不匹配」分支，断言随用例执行顺序漂移。用永不存在的 appId 保证确定性。
+     */
     @Test
-    void testMchNoNotFound() {
-        Map<String, Object> params = TestDataFactory.buildParamsWith("mchNo", "INVALID-MCH");
+    void testMchAppNotExist() {
+        Map<String, Object> params = TestDataFactory.buildParamsWith("appId", "INVALID-APP");
 
         given()
                 .body(params)
@@ -56,8 +62,9 @@ public class UnifiedOrderTest extends PayApiTestBase{
                 .body("msg", equalTo("商户或商户应用不存在"));
     }
 
-    // PAY-018：废弃 — ApiController 第 89 行检查被 queryMchApp 的 mchNo+appId 联合查询提前拦截，
-    //           app 必然属于查询时的 mchNo，此分支 API 层不可达（与 PAY-014 同为死代码）
+    // 说明：ApiController:89-91「参数appId与商户号不匹配」分支在无缓存路径（queryMchApp 联合查询）
+    //       确实不可达（app 必属于查询 mchNo）；但缓存启用时，该分支可被「其他用例预热 appId 缓存」
+    //       触发，属于缓存与直查路径的行为差异，已在工程问题日志记录。
 
     @Test
     void testWrongSign() {

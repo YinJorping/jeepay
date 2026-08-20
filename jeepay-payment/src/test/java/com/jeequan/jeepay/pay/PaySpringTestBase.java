@@ -14,6 +14,7 @@ import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.tuple.MutablePair;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -43,6 +44,9 @@ public abstract class PaySpringTestBase {
 
     @Autowired
     protected JdbcTemplate jdbcTemplate;
+
+    /** 测试商户应用私钥，与 prepare-test-credentials.sql 中 APP-TEST-001 的 app_secret 一致 */
+    private static final String APP_SECRET = "test_app_secret_abc123";
 
     /** 支付渠道回调 mock：不连真实微信支付回调 */
     @MockBean
@@ -76,12 +80,17 @@ public abstract class PaySpringTestBase {
     @BeforeEach
     void setUpBaseUri() {
         // 必须显式 setBaseUri + setContentType：
-        // 1) RestAssured 的 requestSpecification 是 static，会被 PayApiTestBase（baseUri=9216）污染
+        // 1) RestAssured 的 requestSpecification 是 static，会被其他测试类污染
         // 2) 退款下单等接口走 JSON body，缺 Content-Type 时服务端按表单解析导致 sign 读不到
         RestAssured.requestSpecification = new RequestSpecBuilder()
                 .setBaseUri("http://localhost:" + port)
                 .setContentType(ContentType.JSON)
                 .build();
+    }
+
+    /** 根据参数计算 MD5 签名（供统一下单/查询/关单/退款等 API 用例复用） */
+    protected String signParams(Map<String, Object> params) {
+        return SignUtils.getSign(params, APP_SECRET);
     }
 
     // ──── 支付回调 mock 快捷方法（供 SM-04/05 及回调模块复用） ────

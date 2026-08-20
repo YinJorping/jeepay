@@ -119,11 +119,11 @@
 
 | 模块 | 状态 | 已沉淀测试资产 |
 |------|------|--------------|
-| 支付 | ✅ | SignUtils、PayApiTestBase、TestDataFactory、UnifiedOrderTest（14 条）、PayOrderQueryCloseTest（3 条）、prepare-test-data.sql、工程问题日志（6 条） |
-| 回调 | ✅ | CallbackTestBase、ChannelCallbackTest（9 条）、prepare-callback-data.sql、@MockBean mock 渠道模式 |
-| 退款 | ✅ | RefundSpringTestBase、RefundOrderTest（12 条）、RefundOrderQueryTest（4 条）、RefundOrderSuccessTest（1 条）、RefundOrderNoticeTest（2 条）、prepare-refund-data.sql、SQL 对账断言 |
+| 支付 | ✅ | SignUtils、PaySpringTestBase、TestDataFactory、UnifiedOrderTest（16 条）、PayOrderQueryCloseTest（3 条）、prepare-test-data.sql、工程问题日志 |
+| 回调 | ✅ | ChannelCallbackTest（9 条）、prepare-callback-data.sql、@MockBean mock 渠道模式 |
+| 退款 | ✅ | RefundOrderTest（12 条）、RefundOrderQueryTest（4 条）、RefundOrderSuccessTest（1 条）、RefundOrderNoticeTest（2 条）、prepare-refund-data.sql、SQL 对账断言 |
 | 认证 | ✅ | AuthSpringTestBase、AuthLoginTest（16 条）、AuthTokenTest（6 条）、prepare-auth-data.sql、验证码种入 Redis 模式、JWT token 鉴权 6 场景 |
-| CI/CD | ⬜ | 待开始 |
+| CI/CD | ✅ | scripts/run-tests.sh（84 用例一键跑）、ci.yml（MySQL/Redis/RocketMQ + 报告上传）、直连 35 条迁 @SpringBootTest（⚠️ CI 需 fork 后验证） |
 
 ### 对话启动方式
 

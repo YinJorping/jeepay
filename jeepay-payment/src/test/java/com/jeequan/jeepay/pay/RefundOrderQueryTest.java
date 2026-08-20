@@ -7,7 +7,7 @@ import java.util.Map;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 
-public class RefundOrderQueryTest extends PayApiTestBase {
+public class RefundOrderQueryTest extends PaySpringTestBase {
 
     /**
      * 查询已存在的退款单（按 refundOrderId）
