@@ -30,7 +30,6 @@ services:
     volumes:
       - mysql:/var/lib/mysql
       - ./docs/sql/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
-      - ./docs/sql/patch.sql:/docker-entrypoint-initdb.d/02-patch.sql:ro
     networks:
       jeepay:
         ipv4_address: 172.20.0.10
