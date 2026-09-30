@@ -46,6 +46,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # MySQL 镜像只有 arm64，runner 是 amd64。不注册 binfmt 时容器报
+      # `exec /usr/local/bin/docker-entrypoint.sh: exec format error` 并 Restarting(255)，
+      # 导致 `docker compose up --wait` 立即失败。注册 QEMU 后才能模拟执行 arm64 镜像；
+      # 模拟下 MySQL 初始化较慢，需配合 docker-compose.yml 中放宽的 healthcheck 窗口。
+      - name: Set up QEMU（arm64 镜像需要）
+        uses: docker/setup-qemu-action@v3
+
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
