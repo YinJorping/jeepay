@@ -59,6 +59,14 @@ jobs:
       - name: 启动基础设施（MySQL/Redis/RocketMQ）
         run: docker compose up -d --wait mysql redis rocketmq-namesrv rocketmq-broker
 
+      # 基础设施起不来时把容器状态和 MySQL 日志打出来，
+      # 否则只能拿到一句 "container jeepay-mysql is unhealthy"，无从判断是初始化慢还是初始化报错。
+      - name: 基础设施启动失败时转储日志
+        if: failure()
+        run: |
+          docker compose ps -a
+          docker compose logs --no-color mysql || true
+
       # 加载幂等 seed 数据。MySQL 已在首次启动时通过 initdb 挂载执行 docs/sql/init.sql。
       - name: 加载测试 seed 数据
         run: |
